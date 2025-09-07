@@ -6,6 +6,7 @@ const userSchema = new Schema({
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true , select : false },
     address: { type: String, required: true },
+    role: { type: String, enum: ['customer', 'admin'], default: 'customer' },
     otp: { type: String },
     otpExpiry: { type: Date },
     status: { type: String, enum: ['active', 'inactive'], default: 'inactive' }

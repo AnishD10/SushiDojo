@@ -1,0 +1,72 @@
+# Node.js dependencies
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Environment variables
+.env
+.env.*
+
+# OS generated files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Logs
+logs/
+*.log
+
+# Build output
+dist/
+build/
+out/
+coverage/
+
+# IDE files
+.vscode/
+.idea/
+*.sublime-workspace
+*.sublime-project
+
+# Misc
+*.local
+*.cache
+*.tmp
+*.swp
+*.bak
+
+# Mac system files
+.AppleDouble
+.LSOverride
+
+# Windows system files
+ehthumbs.db
+$RECYCLE.BIN/
+
+# Test coverage
+coverage/
+.nyc_output/
+
+# Optional npm cache directory
+.npm/
+
+# Parcel-bundler cache
+.cache/
+
+# Next.js build output
+.next/
+
+# SvelteKit build output
+.svelte-kit/
+
+# Storybook build output
+storybook-static/
+
+# TypeScript cache
+*.tsbuildinfo
+
+# Python cache (if any)
+__pycache__/
+*.py[cod]

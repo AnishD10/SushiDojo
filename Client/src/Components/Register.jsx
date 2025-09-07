@@ -33,7 +33,6 @@ const Register = ({ isOpen, onClose }) => {
     <div className="modal-overlay">
       <div className="modal-content">
         <button className="modal-close" onClick={onClose}>&times;</button>
-        <h2 className="modal-title">Register</h2>
         <form className="modal-form" onSubmit={handleSubmit}>
           <label>
             Name

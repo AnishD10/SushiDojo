@@ -1,16 +1,29 @@
-import React, { useState } from 'react';
+import React, { useState, useContext , useEffect } from 'react';
 import axios from 'axios';
+import { AuthContext } from '../context/AuthContext';
 
 const Login = ({ isOpen, onClose, onRegisterClick }) => {
+  const { setIsLoggedIn, setUser } = useContext(AuthContext);
+
   const [forgotStep, setForgotStep] = useState(0); // 0: login, 1: email, 2: otp, 3: new password
   const [forgotEmail, setForgotEmail] = useState('');
 
-  const [form , setForm ] = useState({
-    email : "",
-    password : ""
+  const [form, setForm] = useState({
+    email: "",
+    password: ""
   });
 
-  const [message , setMessage ] = useState("");
+  const [message, setMessage] = useState("");
+
+  // Reset form and message when modal is closed or opened
+  useEffect(() => {
+    if (!isOpen) {
+      setForm({ email: "", password: "" });
+      setMessage("");
+      setForgotStep(0);
+      setForgotEmail("");
+    }
+  }, [isOpen]);
 
   const handleChange = (e) => {
     setForm({
@@ -24,6 +37,21 @@ const Login = ({ isOpen, onClose, onRegisterClick }) => {
     try {
       const res = await axios.post("http://localhost:3000/api/users/login", form);
       setMessage("Login successful");
+      setIsLoggedIn(true);
+      if (res.data && res.data.data) {
+        setUser({
+          name: res.data.data.name,
+          email: res.data.data.email,
+          address: res.data.data.address
+        });
+      } else {
+        setUser(null);
+      }
+      setForm({ email: "", password: "" });
+      setForgotStep(0);
+      setForgotEmail("");
+      setTimeout(() => setMessage(""), 300); // Clear message after short delay
+      onClose && onClose();
     } catch (err) {
       setMessage(err.response?.data?.message || "Login failed");
     }
@@ -35,6 +63,7 @@ const Login = ({ isOpen, onClose, onRegisterClick }) => {
     <div className="modal-overlay">
       <div className="modal-content">
         <button className="modal-close" onClick={onClose}>&times;</button>
+        {/* Heading removed as requested */}
         {forgotStep === 0 && (
           <form className="modal-form" onSubmit={handleSubmit}>
             <label>
