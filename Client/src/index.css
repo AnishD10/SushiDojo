@@ -10,7 +10,7 @@
 .modal-link-btn {
 	background: none;
 	border: none;
-	color: #F5C000;
+	color: #7C1D25;
 	cursor: pointer;
 	font-size: 0.95rem;
 	text-decoration: underline;
@@ -20,7 +20,7 @@
 	transition: color 0.2s;
 }
 .modal-link-btn:hover {
-	color: #d4a900;
+	color: #a32c36;
 }
 /* Modal styles */
 .modal-overlay {
@@ -39,7 +39,8 @@
 }
 
 .modal-content {
-	background: #fff;
+	background: #151618;
+	color: #fff;
 	padding: 2rem 2.5rem;
 	border-radius: 1rem;
 	box-shadow: 0 4px 32px rgba(0,0,0,0.18);
@@ -77,20 +78,22 @@
 	display: flex;
 	flex-direction: column;
 	font-size: 1rem;
-	color: #222;
+	color: #fff;
 	user-select: none;
 }
 
 .modal-form input {
 	margin-top: 0.25rem;
 	padding: 0.5rem 0.75rem;
-	border: 1px solid #ccc;
+	border: 1px solid #7C1D25;
 	border-radius: 0.5rem;
 	font-size: 1rem;
+	background: #151618;
+	color: #fff;
 }
 
 .modal-submit {
-	background: #F5C000;
+	background: #7C1D25;
 	color: #fff;
 	border: none;
 	border-radius: 0.5rem;
@@ -102,7 +105,7 @@
 	transition: background 0.2s;
 }
 .modal-submit:hover {
-	background: #d4a900;
+	background: #a32c36;
 }
 .nav-underline {
 	position: relative;
@@ -126,7 +129,7 @@
 	transition: background 0.2s, box-shadow 0.2s, transform 0.2s;
 }
 .nav-btn:hover {
-	background: #d4a900;
+	background: #a32c36;
 	box-shadow: 0 2px 8px rgba(0,0,0,0.12);
 	transform: scale(1.05);
 }

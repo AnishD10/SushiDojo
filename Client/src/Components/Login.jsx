@@ -7,6 +7,9 @@ const Login = ({ isOpen, onClose, onRegisterClick }) => {
 
   const [forgotStep, setForgotStep] = useState(0); // 0: login, 1: email, 2: otp, 3: new password
   const [forgotEmail, setForgotEmail] = useState('');
+  const [otp, setOtp] = useState('');
+  const [resetPassword, setResetPassword] = useState({ newPassword: '', confirmNewPassword: '' });
+  const [forgotLoading, setForgotLoading] = useState(false);
 
   const [form, setForm] = useState({
     email: "",
@@ -40,6 +43,7 @@ const Login = ({ isOpen, onClose, onRegisterClick }) => {
       setIsLoggedIn(true);
       if (res.data && res.data.data) {
         setUser({
+          _id: res.data.data._id,
           name: res.data.data.name,
           email: res.data.data.email,
           address: res.data.data.address
@@ -88,40 +92,94 @@ const Login = ({ isOpen, onClose, onRegisterClick }) => {
           </form>
         )}
         {forgotStep === 1 && (
-          <form className="modal-form" onSubmit={e => { e.preventDefault(); setForgotStep(2); }}>
+          <form className="modal-form" onSubmit={async e => {
+            e.preventDefault();
+            setForgotLoading(true);
+            setMessage("");
+            try {
+              await axios.post("http://localhost:3000/api/users/forgot-password", { email: forgotEmail });
+              setMessage("OTP sent to your email");
+              setForgotStep(2);
+            } catch (err) {
+              setMessage(err.response?.data?.message || "Failed to send OTP");
+            }
+            setForgotLoading(false);
+          }}>
             <label>
               Enter your email
               <input type="email" value={forgotEmail} onChange={e => setForgotEmail(e.target.value)} required />
             </label>
-            <button type="submit" className="modal-submit">Send OTP</button>
+            {message && <div className={`text-center text-sm ${message.includes('OTP sent') ? 'text-green-600' : 'text-red-500'}`}>{message}</div>}
+            <button type="submit" className="modal-submit" disabled={forgotLoading}>{forgotLoading ? 'Sending...' : 'Send OTP'}</button>
             <div className="modal-links">
               <button type="button" className="modal-link-btn" onClick={() => setForgotStep(0)}>Back to Login</button>
             </div>
           </form>
         )}
         {forgotStep === 2 && (
-          <form className="modal-form" onSubmit={e => { e.preventDefault(); setForgotStep(3); }}>
+          <form className="modal-form" onSubmit={async e => {
+            e.preventDefault();
+            setForgotLoading(true);
+            setMessage("");
+            try {
+              await axios.post("http://localhost:3000/api/users/verify-otp", { email: forgotEmail, otp });
+              setMessage("OTP verified. Please set your new password.");
+              setForgotStep(3);
+            } catch (err) {
+              setMessage(err.response?.data?.message || "Invalid or expired OTP");
+            }
+            setForgotLoading(false);
+          }}>
             <label>
               Enter OTP sent to {forgotEmail}
-              <input type="text" name="otp" maxLength={6} required />
+              <input type="text" name="otp" maxLength={6} value={otp} onChange={e => setOtp(e.target.value)} required />
             </label>
-            <button type="submit" className="modal-submit">Verify OTP</button>
+            {message && <div className={`text-center text-sm ${message.includes('verified') ? 'text-green-600' : 'text-red-500'}`}>{message}</div>}
+            <button type="submit" className="modal-submit" disabled={forgotLoading}>{forgotLoading ? 'Verifying...' : 'Verify OTP'}</button>
             <div className="modal-links">
               <button type="button" className="modal-link-btn" onClick={() => setForgotStep(1)}>Back</button>
             </div>
           </form>
         )}
         {forgotStep === 3 && (
-          <form className="modal-form">
+          <form className="modal-form" onSubmit={async e => {
+            e.preventDefault();
+            setForgotLoading(true);
+            setMessage("");
+            if (resetPassword.newPassword !== resetPassword.confirmNewPassword) {
+              setMessage("Passwords do not match");
+              setForgotLoading(false);
+              return;
+            }
+            try {
+              await axios.post("http://localhost:3000/api/users/reset-password", {
+                email: forgotEmail,
+                otp,
+                newPassword: resetPassword.newPassword
+              });
+              setMessage("Password reset successful. You can now log in.");
+              setTimeout(() => {
+                setForgotStep(0);
+                setForgotEmail("");
+                setOtp("");
+                setResetPassword({ newPassword: '', confirmNewPassword: '' });
+                setMessage("");
+              }, 1500);
+            } catch (err) {
+              setMessage(err.response?.data?.message || "Failed to reset password");
+            }
+            setForgotLoading(false);
+          }}>
             <label>
               Enter new password
-              <input type="password" name="newPassword"  required />
+              <input type="password" name="newPassword" value={resetPassword.newPassword} onChange={e => setResetPassword(r => ({...r, newPassword: e.target.value}))} required />
             </label>
             <label>
               Confirm new password
-              <input type="password" name="confirmNewPassword" required />
+              <input type="password" name="confirmNewPassword" value={resetPassword.confirmNewPassword} onChange={e => setResetPassword(r => ({...r, confirmNewPassword: e.target.value}))} required />
             </label>
-            <button type="submit" className="modal-submit">Set New Password</button>
+            {message && <div className={`text-center text-sm ${message.includes('successful') ? 'text-green-600' : 'text-red-500'}`}>{message}</div>}
+            <button type="submit" className="modal-submit" disabled={forgotLoading}>{forgotLoading ? 'Setting...' : 'Set New Password'}</button>
           </form>
         )}
       </div>
